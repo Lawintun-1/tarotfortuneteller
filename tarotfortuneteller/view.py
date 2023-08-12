@@ -7,6 +7,7 @@ class View:
         self.root.title("Tarot Fortune Teller")
         self.root.configure(bg="#404040")
         self.card_frame = None
+        self.questions = None
 
     def set_controller(self, controller):
         self.controller = controller
@@ -15,7 +16,7 @@ class View:
         # Clear existing widgets
         for widget in self.root.winfo_children():
             widget.destroy()
-
+        self.questions = self.controller.get_questions()
         # Configure root window for full screen
         self.root.attributes("-fullscreen", True)
 
@@ -25,30 +26,39 @@ class View:
         button_height = 3
         button_width = 20
 
-        # Create button frame
-        button_frame = tk.Frame(self.root, bg="#404040")
-        button_frame.grid(row=0, column=1, rowspan=2, sticky="ns")
-
-        questions = self.controller.get_questions()
-        # Create and grid buttons
-        for index, question in enumerate(questions):
-            button = tk.Button(button_frame, text=question, width=button_width, height=button_height,
-                               command=lambda q=question: self.controller.on_question_button_click(q))
-            button.grid(row=index, column=0, padx=10, pady=20, sticky="w")
-
-        exit_button = tk.Button(button_frame, text="Exit", width=button_width, height=button_height,
-                                command=self.controller.on_exit_button_click)
-        exit_button.grid(row=len(questions), column=0, padx=10, pady=20, sticky="w")
-
+        # Create and grid the image
         back_card_image = tk.PhotoImage(file="Asset/cover.png")
         back_card_label = tk.Label(self.root, image=back_card_image)
         back_card_label.image = back_card_image
-        back_card_label.grid(row= 1, column=0, rowspan=len(questions) -3 ,  sticky="nsew") # back image display + 1
+        back_card_label.grid(row=1, column=0, rowspan=len(self.questions) - 2, sticky="nsew")
+
+        # Create label for the text
+        text_label = tk.Label(self.root, text="Tarot Fortune Teller", font=("Helvetica", 24, "italic", "bold"),
+                              bg="#404040", fg="lightblue")
+        text_label.grid(row=0, column=0, columnspan=1, padx=10, pady=20, sticky="nsew")
+
+        # Create button frame
+        button_frame = tk.Frame(self.root, bg="#404040")
+        button_frame.grid(row=1, column=1, rowspan=len(self.questions) - 2, sticky="nsew")
+
+        # Create and grid buttons
+        for index, question in enumerate(self.questions):
+            button = tk.Button(button_frame, text=question, width=button_width, height=button_height,
+                               command=lambda q=question: self.controller.on_question_button_click(q),
+                               bg="light blue", fg="black")
+            button.grid(row=index, column=0, padx=10, pady=20, sticky="nsew")
+
+        # Exit button
+        exit_button = tk.Button(button_frame, text="Exit", width=button_width, height=button_height,
+                                command=self.controller.on_exit_button_click,
+                                bg="red", fg="white")
+        exit_button.grid(row=len(self.questions), column=0, padx=10, pady=20, sticky="nsew")
 
         # Configure grid weights to expand column 0 (back card) and column 1 (button group)
-        self.root.grid_rowconfigure(3, weight=2)
-        self.root.grid_columnconfigure(1, weight=3)  # Back card # original 0,4
-        self.root.grid_columnconfigure(1, weight=1)  # Button group
+        self.root.grid_rowconfigure(2, weight=1)  # Back card row
+        self.root.grid_rowconfigure(3, weight=1)  # First button row
+        self.root.grid_columnconfigure(1, weight=1)  # Button group column
+
         #self.root.grid_rowconfigure(2, weight=1)
 
     def show_page_2(self, question):
@@ -76,12 +86,12 @@ class View:
         button_frame = tk.Frame(self.root, bg="#404040")
         button_frame.pack(side="right", fill="y")
 
-        back_button = tk.Button(button_frame, text="Back", width=button_width, height=button_height,
+        back_button = tk.Button(button_frame, text=" << Back", width=button_width, height=button_height, fg="white",bg="gray",
                                 command=self.controller.on_back_button_click)
         back_button.pack(side="top", padx=10, pady=20)
 
         # Create the shuffle button and save a reference to it in the View class
-        shuffle_button = tk.Button(button_frame, text="Shuffle", width=button_width, height=button_height,
+        shuffle_button = tk.Button(button_frame, text="Shuffle", width=button_width, height=button_height, bg="lightblue",fg="black",
                                    command=lambda q=question: self.controller.on_shuffle_button_click(q))
         shuffle_button.pack(side="top", padx=10, pady=20)
         self.shuffle_button = shuffle_button
@@ -169,7 +179,7 @@ class View:
         back_button_frame.pack(side="top", fill="x")
 
         # Create and grid back button
-        back_button = tk.Button(back_button_frame, text="Back", width=button_width, height=button_height,
+        back_button = tk.Button(back_button_frame, text="<< Back", width=button_width, height=button_height, bg="gray", fg="white",
                                 command=lambda: self.controller.on_back_button_click_3(question))
         back_button.pack(side="right", padx=10, pady=20)
         first_image_path = self.controller.get_tarot_card_image_path(
