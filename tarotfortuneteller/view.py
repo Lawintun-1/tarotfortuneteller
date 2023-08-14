@@ -1,5 +1,6 @@
 import sys
 import os
+import pkg_resources
 from PIL import Image, ImageTk
 import tkinter as tk
 
@@ -27,9 +28,10 @@ class View:
         screen_height = self.root.winfo_screenheight()
         button_height = 3
         button_width = 20
-        executable_dir = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+        '''executable_dir = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
         # Load the image from the executable directory
-        back_card_image_path = os.path.join(executable_dir, "Asset/cover.png")
+        back_card_image_path = os.path.join(executable_dir, "Asset","cover.png")'''
+        back_card_image_path = pkg_resources.resource_filename(__name__,"/Asset/cover.png")
         # Create and grid the image
         back_card_image = tk.PhotoImage(file=back_card_image_path)
         back_card_label = tk.Label(self.root, image=back_card_image)
