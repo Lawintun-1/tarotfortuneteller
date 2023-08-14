@@ -1,3 +1,4 @@
+import sys
 import random
 import os
 
@@ -5,7 +6,9 @@ class Model:
     def __init__(self):
         self.tarot_card_image_path = None
         self.user_question = None
-        self.image_path = "Asset/backcard.png"
+        self.executable_dir = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+        # Load the image from the executable directory
+        self.image_path = os.path.join(self.executable_dir, "Asset/backcard.png")
         self.questions = ["General", "Past Life", "Love Life", "Education", "Career"]
         self.cards = ["The Fool", "The Magician", "The Popess", "The Empress", "The Emperor",
                       "The Hierophant", "The Lovers", "The Chariot", "Strength", "The Hermit",
@@ -47,7 +50,10 @@ class Model:
     def give_tarot_card_image_path(self,question): #current
         folder_name = "Cards"
         random_card = random.choice(self.card_to_image)
-        random_card_path = os.path.join(folder_name,random_card)
+        executable_dir = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+        # Load the image from the executable directory
+        random_card_paths = os.path.join(executable_dir, "Cards/"+random_card)
+        random_card_path = os.path.join(folder_name,random_card_paths)
         self.tarot_card_image_path = random_card_path
         return self.tarot_card_image_path
     def get_tarot_random_card_name(self,card):

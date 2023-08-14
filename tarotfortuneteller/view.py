@@ -1,3 +1,5 @@
+import sys
+import os
 from PIL import Image, ImageTk
 import tkinter as tk
 
@@ -25,9 +27,11 @@ class View:
         screen_height = self.root.winfo_screenheight()
         button_height = 3
         button_width = 20
-
+        executable_dir = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+        # Load the image from the executable directory
+        back_card_image_path = os.path.join(executable_dir, "Asset/cover.png")
         # Create and grid the image
-        back_card_image = tk.PhotoImage(file="Asset/cover.png")
+        back_card_image = tk.PhotoImage(file=back_card_image_path)
         back_card_label = tk.Label(self.root, image=back_card_image)
         back_card_label.image = back_card_image
         back_card_label.grid(row=1, column=0, rowspan=len(self.questions) - 2, sticky="nsew")
@@ -137,7 +141,10 @@ class View:
                 delay = 1900
 
             card_image_path = self.controller.get_card_path(i)
-            pil_image = Image.open(card_image_path)
+            executable_dir = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+            # Load the image from the executable directory
+            back_card_image_path = os.path.join(executable_dir, card_image_path)
+            pil_image = Image.open(back_card_image_path)
             resized_pil_image = pil_image.resize((120, 220), Image.LANCZOS)
             card_image = ImageTk.PhotoImage(resized_pil_image)
             card_label = tk.Label(self.card_frame, image=card_image, bg="#404040")
@@ -200,8 +207,10 @@ class View:
         image_frame.pack(fill="both", expand=True)
 
         # Load and display the first image on the right side
-
-        first_image = Image.open(first_image_path)
+        executable_dir = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+        # Load the image from the executable directory
+        first_image_paths = os.path.join(executable_dir,first_image_path)
+        first_image = Image.open(first_image_paths)
         first_image = first_image.resize((first_image_width, first_image_height), Image.LANCZOS)
         first_image = ImageTk.PhotoImage(first_image)
         first_image_label = tk.Label(image_frame, image=first_image, bg="#404040")
@@ -211,7 +220,10 @@ class View:
         # Load and display the second image on the left side
         second_image_path = self.controller.get_tarot_prediction_image_path(
             question,card)  # Update with the path to your second image
-        second_image = Image.open(second_image_path)
+        executable_dir = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+        # Load the image from the executable directory
+        second_image_paths = os.path.join(executable_dir, second_image_path)
+        second_image = Image.open(second_image_paths)
         second_image = second_image.resize((second_image_width, second_image_height), Image.LANCZOS)
         second_image = ImageTk.PhotoImage(second_image)
         second_image_label = tk.Label(image_frame, image=second_image, bg="#404040")

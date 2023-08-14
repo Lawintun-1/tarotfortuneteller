@@ -1,3 +1,4 @@
+import sys
 import tkinter as tk
 from model import Model
 from view import View
